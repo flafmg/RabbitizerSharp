@@ -89,28 +89,6 @@ jobs:
           name: native-win-x64
           path: native_build/rabbitizer.dll
 
-  build-windows-arm64:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: CLANGARM64
-          install: mingw-w64-clang-aarch64-clang
-      - name: Build rabbitizer.dll
-        run: |
-          mkdir -p native_build
-          clang -shared -std=c11 -I rabbitizer/include -I rabbitizer/tables $(find rabbitizer/src -name "*.c") -o native_build/rabbitizer.dll
-      - uses: actions/upload-artifact@v4
-        with:
-          name: native-win-arm64
-          path: native_build/rabbitizer.dll
-
   pack-and-publish:
     needs:
       - build-linux-x64
@@ -118,7 +96,7 @@ jobs:
       - build-macos-x64
       - build-macos-arm64
       - build-windows-x64
-      - build-windows-arm64
+      # removed windows arm until i figure out how to make it work
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
