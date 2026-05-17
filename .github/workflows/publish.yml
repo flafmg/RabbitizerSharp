@@ -1,5 +1,4 @@
 name: build and publish to nuget
-
 on:
   push:
     tags: ["v*"]
@@ -10,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive # NOW CAN YOU PLEASE FUCKING WORK?
       - name: Build librabbitizer.so
         run: |
           sudo apt-get install -y clang
@@ -24,6 +25,8 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Build librabbitizer.so
         run: |
           sudo apt-get install -y clang
@@ -38,6 +41,8 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Build librabbitizer.dylib
         run: |
           mkdir -p native_build
@@ -51,6 +56,8 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Build librabbitizer.dylib
         run: |
           mkdir -p native_build
@@ -67,6 +74,8 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: msys2/setup-msys2@v2
         with:
           msystem: CLANG64
@@ -87,6 +96,8 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: msys2/setup-msys2@v2
         with:
           msystem: CLANGARM64
