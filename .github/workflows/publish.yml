@@ -37,21 +37,6 @@ jobs:
           name: native-linux-arm64
           path: native_build/librabbitizer.so
 
-  build-macos-x64:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Build librabbitizer.dylib
-        run: |
-          mkdir -p native_build
-          clang -dynamiclib -std=c11 -I rabbitizer/include -I rabbitizer/tables $(find rabbitizer/src -name "*.c") -o native_build/librabbitizer.dylib
-      - uses: actions/upload-artifact@v4
-        with:
-          name: native-osx-x64
-          path: native_build/librabbitizer.dylib
-
   build-macos-arm64:
     runs-on: macos-14
     steps:
@@ -93,7 +78,7 @@ jobs:
     needs:
       - build-linux-x64
       - build-linux-arm64
-      - build-macos-x64
+     # - build-macos-x64 # removed because the runner wont.. well.. run
       - build-macos-arm64
       - build-windows-x64
       # removed windows arm until i figure out how to make it work
