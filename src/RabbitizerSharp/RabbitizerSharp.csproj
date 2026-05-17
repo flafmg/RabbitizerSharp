@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <PackageId>RabbitizerSharp</PackageId>
+    <Version>1.15.0</Version>
+    <Authors>flaffy</Authors>
+    <Description>C# bindings for rabbitizer</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/flafmg/RabbitizerSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/flafmg/RabbitizerSharp</RepositoryUrl>
+    <PackageTags>mips;disassembler;rabbitizer</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+</Project>
