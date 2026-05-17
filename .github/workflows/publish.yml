@@ -1,4 +1,5 @@
 name: build and publish to nuget
+
 on:
   push:
     tags: ["v*"]
@@ -10,25 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build librabbitizer.so
-        working-directory: rabbitizer
         run: |
           sudo apt-get install -y clang
-          make dynamic CC=clang
+          mkdir -p rabbitizer/build
+          clang -shared -fPIC -std=c11 -Irabbitizer/include \
+            $(find rabbitizer/src -name "*.c") \
+            -o rabbitizer/build/librabbitizer.so
       - uses: actions/upload-artifact@v4
         with:
           name: native-linux-x64
           path: rabbitizer/build/librabbitizer.so
-
 
   build-linux-arm64:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - name: Build librabbitizer.so
-        working-directory: rabbitizer
         run: |
           sudo apt-get install -y clang
-          make dynamic CC=clang
+          mkdir -p rabbitizer/build
+          clang -shared -fPIC -std=c11 -Irabbitizer/include \
+            $(find rabbitizer/src -name "*.c") \
+            -o rabbitizer/build/librabbitizer.so
       - uses: actions/upload-artifact@v4
         with:
           name: native-linux-arm64
@@ -39,10 +43,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build librabbitizer.dylib
-        working-directory: rabbitizer
         run: |
-          make dynamic CC=clang
-          clang -dynamiclib -o build/librabbitizer.dylib build/src/**/*.o
+          mkdir -p rabbitizer/build
+          clang -dynamiclib -fPIC -std=c11 -Irabbitizer/include \
+            $(find rabbitizer/src -name "*.c") \
+            -o rabbitizer/build/librabbitizer.dylib
       - uses: actions/upload-artifact@v4
         with:
           name: native-osx-x64
@@ -53,10 +58,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build librabbitizer.dylib
-        working-directory: rabbitizer
         run: |
-          make dynamic CC=clang
-          clang -dynamiclib -o build/librabbitizer.dylib build/src/**/*.o
+          mkdir -p rabbitizer/build
+          clang -dynamiclib -fPIC -std=c11 -Irabbitizer/include \
+            $(find rabbitizer/src -name "*.c") \
+            -o rabbitizer/build/librabbitizer.dylib
       - uses: actions/upload-artifact@v4
         with:
           name: native-osx-arm64
@@ -72,12 +78,13 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           msystem: CLANG64
-          install: mingw-w64-clang-x86_64-clang make
+          install: mingw-w64-clang-x86_64-clang
       - name: Build rabbitizer.dll
-        working-directory: rabbitizer
         run: |
-          make dynamic CC=clang
-          clang -shared -o build/rabbitizer.dll build/src/**/*.o
+          mkdir -p rabbitizer/build
+          clang -shared -fPIC -std=c11 -Irabbitizer/include \
+            $(find rabbitizer/src -name "*.c") \
+            -o rabbitizer/build/rabbitizer.dll
       - uses: actions/upload-artifact@v4
         with:
           name: native-win-x64
@@ -93,12 +100,13 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           msystem: CLANGARM64
-          install: mingw-w64-clang-aarch64-clang make
+          install: mingw-w64-clang-aarch64-clang
       - name: Build rabbitizer.dll
-        working-directory: rabbitizer
         run: |
-          make dynamic CC=clang
-          clang -shared -o build/rabbitizer.dll build/src/**/*.o
+          mkdir -p rabbitizer/build
+          clang -shared -fPIC -std=c11 -Irabbitizer/include \
+            $(find rabbitizer/src -name "*.c") \
+            -o rabbitizer/build/rabbitizer.dll
       - uses: actions/upload-artifact@v4
         with:
           name: native-win-arm64
@@ -141,5 +149,6 @@ jobs:
 
       - name: pack
         run: dotnet pack src/RabbitizerSharp/RabbitizerSharp.csproj -c Release -p:Version=${{ steps.version.outputs.VERSION }} -o ./nupkg
+
       - name: publish to NuGet
         run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
